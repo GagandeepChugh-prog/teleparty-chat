@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import CreateRoom from './components/CreateRoom';
+import JoinRoom from './components/JoinRoom';
+import Chat from './components/Chat';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [nickname, setNickname] = useState<string>('');
+  const [userIcon, setUserIcon] = useState<string>('');
+
+  if (!roomId) {
+    return (
+      <div>
+        <h1>Teleparty Chat</h1>
+        <CreateRoom setRoomId={setRoomId} setNickname={setNickname} setUserIcon={setUserIcon} />
+        <JoinRoom setRoomId={setRoomId} setNickname={setNickname} setUserIcon={setUserIcon} />
+      </div>
+    );
+  }
+
+  return <Chat roomId={roomId} nickname={nickname} userIcon={userIcon} />;
 }
 
 export default App;
