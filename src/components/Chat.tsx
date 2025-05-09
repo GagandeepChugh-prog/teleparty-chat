@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createClient, getClient } from '../client';
+import { createClient, getClient, isSocketConnected } from '../client';
 import { SocketMessageTypes, SessionChatMessage } from 'teleparty-websocket-lib';
 
 interface ChatProps {
@@ -17,14 +17,22 @@ const Chat: React.FC<ChatProps> = ({ roomId, nickname, userIcon }) => {
       (msg) => setMessages((prev) => [...prev, msg]),
       () => alert('Socket closed'),
       () => {
-        getClient().joinChatRoom(nickname, roomId, userIcon);
+        if (isSocketConnected()) {  // Check if socket is ready
+          getClient().joinChatRoom(nickname, roomId, userIcon);
+        } else {
+          alert('Connection not ready, please try again later.');
+        }
       }
     );
   }, [nickname, roomId, userIcon]);
 
   const sendMessage = () => {
-    getClient().sendMessage(SocketMessageTypes.SEND_MESSAGE, { body: messageText });
-    setMessageText('');
+    if (isSocketConnected()) {  // Check if socket is ready
+      getClient().sendMessage(SocketMessageTypes.SEND_MESSAGE, { body: messageText });
+      setMessageText('');
+    } else {
+      alert('Connection not ready, please try again later.');
+    }
   };
 
   return (

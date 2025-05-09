@@ -12,6 +12,7 @@ import {
   };
   
   let client: TelepartyClient;
+  let isSocketReady = false; // Track connection readiness
   
   /**
    * Creates and initializes a TelepartyClient with appropriate handlers.
@@ -31,12 +32,12 @@ import {
           const chatMsg = message.data as SessionChatMessage;
           onChatMessage(chatMsg);
         }
-  
-        // Optional: Add logic here for typing updates, system messages, etc.
       },
-  
       onClose,
-      onConnectionReady: onReady,
+      onConnectionReady: () => {
+        isSocketReady = true;
+        onReady();  // Call onReady when the connection is ready
+      },
     };
   
     client = new TelepartyClient(eventHandler);
@@ -47,4 +48,9 @@ import {
    * Returns the current TelepartyClient instance.
    */
   export const getClient = () => client;
+  
+  /**
+   * Check if the WebSocket connection is ready.
+   */
+  export const isSocketConnected = () => isSocketReady; // Function to check socket readiness
   

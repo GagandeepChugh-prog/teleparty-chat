@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createClient, getClient } from '../client';
+import { createClient, getClient, isSocketConnected } from '../client';
 
 const JoinRoom: React.FC<any> = ({ setRoomId, setNickname, setUserIcon }) => {
   const [nicknameInput, setNicknameInput] = useState('');
@@ -10,10 +10,14 @@ const JoinRoom: React.FC<any> = ({ setRoomId, setNickname, setUserIcon }) => {
       () => {},
       () => alert('Socket closed'),
       () => {
-        getClient().joinChatRoom(nicknameInput, roomIdInput, '');
-        setRoomId(roomIdInput);
-        setNickname(nicknameInput);
-        setUserIcon('');
+        if (isSocketConnected()) {  // Check if socket is ready
+          getClient().joinChatRoom(nicknameInput, roomIdInput, '');
+          setRoomId(roomIdInput);
+          setNickname(nicknameInput);
+          setUserIcon('');
+        } else {
+          alert('Connection not ready, please try again later.');
+        }
       }
     );
   };
